@@ -1,8 +1,21 @@
 ﻿@* A small reusable box that shows ONE school in the list *@
 
-<div class="card mb-2" style="cursor: pointer;" @onclick="() => OnSelect.InvokeAsync(School)">
+<div class="card mb-2 @(IsSelected ? "border-primary border-2" : "")"
+     style="cursor: pointer;"
+     @onclick="() => OnSelect.InvokeAsync(School)">
     <div class="card-body">
-        <h5 class="card-title">@School.SchoolName</h5>
+
+        <div class="d-flex justify-content-between align-items-start">
+            <h5 class="card-title">@School.SchoolName</h5>
+
+            @* Star button to make it favorite *@
+            <button class="btn btn-sm @(IsFavourite ? "btn-warning" : "btn-outline-warning")"
+                    @onclick="() => OnToggleFavourite.InvokeAsync(School)"
+                    @onclick:stopPropagation="true">
+                @(IsFavourite ? "★" : "☆")
+            </button>
+        </div>
+
         <p class="mb-1"><strong>ID:</strong> @School.SchoolId</p>
         <p class="mb-1"><strong>Address:</strong> @School.Address</p>
         <p class="mb-1"><strong>Phone:</strong> @School.PhoneNo</p>
@@ -13,11 +26,23 @@
 </div>
 
 @code {
-    // The page gives the card a school to show
+    // The school to show
     [Parameter]
     public School School { get; set; } = new();
 
-    // When the card is clicked, it tells the page which school was picked
+    // if this card is the one currently selected gives it a blue border
+    [Parameter]
+    public bool IsSelected { get; set; }
+
+    // if the school is in the user's favourites fills in the star
+    [Parameter]
+    public bool IsFavourite { get; set; }
+
+    // Tells the page the card was clicked
     [Parameter]
     public EventCallback<School> OnSelect { get; set; }
+
+    // Tells the page the star was clicked
+    [Parameter]
+    public EventCallback<School> OnToggleFavourite { get; set; }
 }

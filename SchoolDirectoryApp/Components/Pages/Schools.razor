@@ -3,20 +3,39 @@
 
 <PageTitle>School Directory</PageTitle>
 
-<h1>School Directory</h1>
+<h1 class="mb-3">School Directory</h1>
 
-@* Search box: updates the list on every key press *@
-<input @bind="Search"
-       @bind:event="oninput"
-       class="form-control mb-3"
-       placeholder="Search school..." />
+@*  Controls: search, sort, favourites filter, refresh *@
+<div class="row g-2 mb-3 align-items-center">
+    <div class="col-md-5">
+        <input @bind="Search"
+               @bind:event="oninput"
+               class="form-control"
+               placeholder="Search school..." />
+    </div>
 
-@* Refresh button *@
-<button class="btn btn-outline-primary mb-3" @onclick="LoadSchools">Refresh</button>
+    <div class="col-md-3">
+        <select class="form-select" @bind="sortOrder">
+            <option value="asc">Name A → Z</option>
+            <option value="desc">Name Z → A</option>
+        </select>
+    </div>
+
+    <div class="col-md-2">
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="favOnly" @bind="showFavouritesOnly" />
+            <label class="form-check-label" for="favOnly">★ Favourites only</label>
+        </div>
+    </div>
+
+    <div class="col-md-2">
+        <button class="btn btn-outline-primary w-100" @onclick="LoadSchools">Refresh</button>
+    </div>
+</div>
 
 @if (error)
 {
-    @* if something went wrong with the API *@
+    @* is something went wrong with the API *@
     <p class="text-danger">Unable to retrieve school data.</p>
 }
 else if (schools == null)
@@ -25,21 +44,54 @@ else if (schools == null)
 }
 else
 {
+    var filtered = FilteredSchools.ToList();
+
+    @* Statistics dashboard *@
+    <div class="row g-2 mb-3 text-center">
+        <div class="col-4">
+            <div class="card">
+                <div class="card-body py-2">
+                    <h3 class="mb-0">@schools.Count</h3>
+                    <small class="text-muted">Total schools</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-4">
+            <div class="card">
+                <div class="card-body py-2">
+                    <h3 class="mb-0">@filtered.Count</h3>
+                    <small class="text-muted">Showing now</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-4">
+            <div class="card">
+                <div class="card-body py-2">
+                    <h3 class="mb-0">@favouriteIds.Count</h3>
+                    <small class="text-muted">Favourites</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="row">
        
         <div class="col-md-6">
-            @foreach (var school in FilteredSchools)
+            @foreach (var school in filtered)
             {
-                <SchoolCard School="school" OnSelect="ShowDetails" />
+                <SchoolCard School="school"
+                            IsSelected="@(selectedSchool?.SchoolId == school.SchoolId)"
+                            IsFavourite="@favouriteIds.Contains(school.SchoolId)"
+                            OnSelect="ShowDetails"
+                            OnToggleFavourite="ToggleFavourite" />
             }
 
-            @if (!FilteredSchools.Any())
+            @if (!filtered.Any())
             {
-                <p>No schools found.</p>
+                <p class="text-muted">No schools found.</p>
             }
         </div>
 
-      
         <div class="col-md-6">
             @if (selectedSchool != null)
             {
@@ -54,14 +106,35 @@ else
 }
 
 @code {
-    private List<School>? schools;        // all schools from the API (null = still loading)
-    private School? selectedSchool;        // the school the user clicked
-    private bool error;                    // true if the API call failed
-    private string Search { get; set; } = string.Empty;  // text typed in the search box
+    private List<School>? schools;          // all schools from the API (null = still loading)
+    private School? selectedSchool;          // the school the user clicked
+    private bool error;                      // true if the API call failed
+    private string Search { get; set; } = string.Empty;   // text in the search box
+    private string sortOrder = "asc";        // "asc" = A to Z, "desc" = Z to A
+    private bool showFavouritesOnly;         // is the favourites checkbox ticked?
+    private HashSet<int> favouriteIds = new();  // SchoolIds of favourite schools
 
-    // Only the schools whose name contains the search text
-    private IEnumerable<School> FilteredSchools =>
-        schools!.Where(s => s.SchoolName.Contains(Search, StringComparison.OrdinalIgnoreCase));
+    // The list the user actually sees: search -> favourites filter -> sort
+    private IEnumerable<School> FilteredSchools
+    {
+        get
+        {
+            // Keep schools whose name contains the search text
+            var result = schools!.Where(s =>
+                s.SchoolName.Contains(Search, StringComparison.OrdinalIgnoreCase));
+
+            // If "favourites only" is ticked, keep only favourites
+            if (showFavouritesOnly)
+            {
+                result = result.Where(s => favouriteIds.Contains(s.SchoolId));
+            }
+
+            // Sort by name 
+            return sortOrder == "asc"
+                ? result.OrderBy(s => s.SchoolName, StringComparer.OrdinalIgnoreCase)
+                : result.OrderByDescending(s => s.SchoolName, StringComparer.OrdinalIgnoreCase);
+        }
+    }
 
     // Runs automatically when the page opens
     protected override async Task OnInitializedAsync()
@@ -73,7 +146,8 @@ else
     private async Task LoadSchools()
     {
         error = false;
-        schools = null;   // shows the "Loading..." message
+        schools = null;          // shows the "Loading..." message
+        selectedSchool = null;   // clear the old selection
 
         try
         {
@@ -81,12 +155,23 @@ else
         }
         catch
         {
-            error = true; // shows the error message
+            error = true;        // shows the error message
         }
     }
 
+    // Called when a SchoolCard is clicked (EventCallback)
     private void ShowDetails(School school)
     {
         selectedSchool = school;
+    }
+
+    // Called when a star is clicked (EventCallback)
+    private void ToggleFavourite(School school)
+    {
+        // Add() returns false if the id was already there, so then we remove it instead
+        if (!favouriteIds.Add(school.SchoolId))
+        {
+            favouriteIds.Remove(school.SchoolId);
+        }
     }
 }
