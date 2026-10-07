@@ -58,3 +58,107 @@ h1:focus {
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
     text-align: start;
 }
+
+/* ---------- Professional look ---------- */
+
+/* Light grey page background, so white panels stand out */
+main {
+    background-color: #f4f6f9;
+}
+
+/* Page title */
+.page-title {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 0.25rem;
+}
+
+/* White panel with a soft shadow (used for toolbar, stats and table) */
+.panel {
+    border: 0;
+    border-radius: 0.6rem;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08);
+    background-color: #fff;
+}
+
+/* Statistics cards: coloured edge on the left */
+.stat-card {
+    border-left: 4px solid #3b82f6;
+}
+
+    .stat-card.green {
+        border-left-color: #22c55e;
+    }
+
+    .stat-card.amber {
+        border-left-color: #f59e0b;
+    }
+
+.stat-label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #64748b;
+}
+
+.stat-value {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #1e293b;
+    line-height: 1.2;
+}
+
+/* Table */
+.school-table {
+    --bs-table-hover-bg: #f1f5f9; /* row colour on hover */
+    font-size: 0.875rem;
+}
+
+    .school-table thead th {
+        background-color: #f8fafc;
+        font-size: 0.72rem;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        font-weight: 600;
+        color: #64748b;
+        white-space: nowrap;
+        padding: 0.85rem 1rem;
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+    .school-table tbody td {
+        padding: 0.85rem 1rem;
+        color: #334155;
+        border-color: #eef2f6;
+    }
+
+.school-row {
+    cursor: pointer;
+}
+
+/* Long text stays on ONE line and ends with "..." (full text shows on hover) */
+.cell-clamp {
+    max-width: 240px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Star button: no border, just the star */
+.star-btn {
+    background: none;
+    border: none;
+    font-size: 1.3rem;
+    line-height: 1;
+    padding: 0 0.25rem;
+    color: #f59e0b; /* amber when it's a favourite */
+}
+
+    .star-btn.off {
+        color: #cbd5e1; /* grey when it's not */
+    }
+
+        .star-btn.off:hover {
+            color: #f59e0b; /* turns amber on hover */
+        }
