@@ -1,0 +1,23 @@
+﻿@* A small reusable box that shows ONE school in the list *@
+
+<div class="card mb-2" style="cursor: pointer;" @onclick="() => OnSelect.InvokeAsync(School)">
+    <div class="card-body">
+        <h5 class="card-title">@School.SchoolName</h5>
+        <p class="mb-1"><strong>ID:</strong> @School.SchoolId</p>
+        <p class="mb-1"><strong>Address:</strong> @School.Address</p>
+        <p class="mb-1"><strong>Phone:</strong> @School.PhoneNo</p>
+        <p class="mb-1"><strong>Email:</strong> @School.EmailAddress</p>
+        <p class="mb-1"><strong>Proprietor:</strong> @School.ProprietorFullName</p>
+        <p class="mb-0"><strong>Head:</strong> @School.HeadFullName</p>
+    </div>
+</div>
+
+@code {
+    // The page gives the card a school to show
+    [Parameter]
+    public School School { get; set; } = new();
+
+    // When the card is clicked, it tells the page which school was picked
+    [Parameter]
+    public EventCallback<School> OnSelect { get; set; }
+}

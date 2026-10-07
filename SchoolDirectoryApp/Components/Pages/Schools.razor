@@ -1,0 +1,92 @@
+﻿@page "/schools"
+@inject SchoolService Service
+
+<PageTitle>School Directory</PageTitle>
+
+<h1>School Directory</h1>
+
+@* Search box: updates the list on every key press *@
+<input @bind="Search"
+       @bind:event="oninput"
+       class="form-control mb-3"
+       placeholder="Search school..." />
+
+@* Refresh button *@
+<button class="btn btn-outline-primary mb-3" @onclick="LoadSchools">Refresh</button>
+
+@if (error)
+{
+    @* if something went wrong with the API *@
+    <p class="text-danger">Unable to retrieve school data.</p>
+}
+else if (schools == null)
+{
+    <p>Loading schools...</p>
+}
+else
+{
+    <div class="row">
+       
+        <div class="col-md-6">
+            @foreach (var school in FilteredSchools)
+            {
+                <SchoolCard School="school" OnSelect="ShowDetails" />
+            }
+
+            @if (!FilteredSchools.Any())
+            {
+                <p>No schools found.</p>
+            }
+        </div>
+
+      
+        <div class="col-md-6">
+            @if (selectedSchool != null)
+            {
+                <SchoolDetails School="selectedSchool" />
+            }
+            else
+            {
+                <p class="text-muted">Click a school to see its details.</p>
+            }
+        </div>
+    </div>
+}
+
+@code {
+    private List<School>? schools;        // all schools from the API (null = still loading)
+    private School? selectedSchool;        // the school the user clicked
+    private bool error;                    // true if the API call failed
+    private string Search { get; set; } = string.Empty;  // text typed in the search box
+
+    // Only the schools whose name contains the search text
+    private IEnumerable<School> FilteredSchools =>
+        schools!.Where(s => s.SchoolName.Contains(Search, StringComparison.OrdinalIgnoreCase));
+
+    // Runs automatically when the page opens
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadSchools();
+    }
+
+    // Gets the schools from the API
+    private async Task LoadSchools()
+    {
+        error = false;
+        schools = null;   // shows the "Loading..." message
+
+        try
+        {
+            schools = await Service.GetSchoolsAsync();
+        }
+        catch
+        {
+            error = true; // shows the error message
+        }
+    }
+
+    private void ShowDetails(School school)
+    {
+        selectedSchool = school;
+    }
+}

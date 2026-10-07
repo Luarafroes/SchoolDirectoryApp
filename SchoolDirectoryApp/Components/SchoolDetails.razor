@@ -1,0 +1,22 @@
+﻿@* Shows the full details of the school the user clicked on *@
+
+<div class="card border-primary">
+    <div class="card-header bg-primary text-white">
+        <h4 class="mb-0">@School.SchoolName</h4>
+    </div>
+    <div class="card-body">
+        <p><strong>School ID:</strong> @School.SchoolId</p>
+        <p><strong>School Name:</strong> @School.SchoolName</p>
+        <p><strong>Address:</strong> @School.Address</p>
+        <p><strong>Phone No:</strong> @School.PhoneNo</p>
+        <p><strong>Email Address:</strong> @School.EmailAddress</p>
+        <p><strong>Proprietor:</strong> @School.ProprietorFullName</p>
+        <p><strong>Head:</strong> @School.HeadFullName</p>
+    </div>
+</div>
+
+@code {
+    // The school to display, given by the page
+    [Parameter]
+    public School School { get; set; } = new();
+}
