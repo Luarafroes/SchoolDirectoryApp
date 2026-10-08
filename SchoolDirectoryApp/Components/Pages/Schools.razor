@@ -1,6 +1,6 @@
-﻿@page "/"
-@page "/schools"
+﻿@page "/schools"
 @inject SchoolService Service
+@inject FavouritesService Favourites
 
 <PageTitle>School Directory</PageTitle>
 
@@ -84,7 +84,7 @@ else
             <div class="card panel stat-card amber">
                 <div class="card-body">
                     <div class="stat-label">Favourites</div>
-                    <div class="stat-value">@favouriteIds.Count</div>
+                    <div class="stat-value">@Favourites.Count</div>
                 </div>
             </div>
         </div>
@@ -110,7 +110,7 @@ else
                     @foreach (var school in filtered)
                     {
                         <SchoolCard School="school"
-                                    IsFavourite="@favouriteIds.Contains(school.SchoolId)"
+                                    IsFavourite="@Favourites.IsFavourite(school.SchoolId)"
                                     OnSelect="ShowDetails"
                                     OnToggleFavourite="ToggleFavourite" />
                     }
@@ -142,7 +142,6 @@ else
     private string Search { get; set; } = string.Empty;  // what the user typed
     private string sortOrder = "asc";           // "asc" = A to Z, "desc" = Z to A
     private bool showFavouritesOnly;            // is "Favourites only" switched on?
-    private HashSet<int> favouriteIds = new();  // ids of the favourite schools
 
     // Search, then favourites filter, then sort
     private IEnumerable<School> FilteredSchools
@@ -156,7 +155,7 @@ else
             // Keep only favourites if the switch is on
             if (showFavouritesOnly)
             {
-                result = result.Where(s => favouriteIds.Contains(s.SchoolId));
+                result = result.Where(s => Favourites.IsFavourite(s.SchoolId));
             }
 
             // Sort by name
@@ -204,9 +203,6 @@ else
     // A star was clicked: add or remove the favourite
     private void ToggleFavourite(School school)
     {
-        if (!favouriteIds.Add(school.SchoolId))
-        {
-            favouriteIds.Remove(school.SchoolId);
-        }
+        Favourites.Toggle(school.SchoolId);
     }
 }

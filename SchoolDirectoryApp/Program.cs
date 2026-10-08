@@ -7,6 +7,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
+builder.Services.AddScoped<FavouritesService>();
+
 // Register our service and tell it the API's base address
 builder.Services.AddHttpClient<SchoolService>(client =>
 {
