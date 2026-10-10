@@ -106,4 +106,4 @@ README shows whether the latest run passed.
 - Favourites are kept for the current browser session and reset when the page is fully refreshed.
 
 ## Author
-[Your name]
+Luara Moreira Froes
