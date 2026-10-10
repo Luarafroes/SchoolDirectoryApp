@@ -82,25 +82,25 @@ README shows whether the latest run passed.
 ## Screenshots
 
 ### School list loaded
-![School list](Screenshots/List.png)
+![School list](SchoolDirectoryApp/Screenshots/List.png)
 
 ### Search functionality
-![Search](Screenshots/Search.png)
+![Search](SchoolDirectoryApp/Screenshots/Search.png)
 
 ### School details view
-![Details](Screenshots/Details.png)
+![Details](SchoolDirectoryApp/Screenshots/Details.png)
 
 ### Loading state
-![Loading](Screenshots/Loading.png)
+![Loading](SchoolDirectoryApp/Screenshots/Loading.png)
 
 ### Error state
-![Error](Screenshots/Error.png)
+![Error](SchoolDirectoryApp/Screenshots/Error.png)
 
 ### Dashboard
-![Dashboard](Screenshots/Dashboard.png)
+![Dashboard](SchoolDirectoryApp/Screenshots/Dashboard.png)
 
 ### Favourites
-![Favourites](Screenshots/Favourites.png)
+![Favourites](SchoolDirectoryApp/Screenshots/Favourites.png)
 
 ## Notes
 - Favourites are kept for the current browser session and reset when the page is fully refreshed.
