@@ -82,25 +82,25 @@ README shows whether the latest run passed.
 ## Screenshots
 
 ### School list loaded
-![School list](screenshots/List.png)
+![School list](Screenshots/List.png)
 
 ### Search functionality
-![Search](screenshots/Search.png)
+![Search](Screenshots/Search.png)
 
 ### School details view
-![Details](screenshots/Details.png)
+![Details](Screenshots/Details.png)
 
 ### Loading state
-![Loading](screenshots/Loading.png)
+![Loading](Screenshots/Loading.png)
 
 ### Error state
-![Error](screenshots/Error.png)
+![Error](Screenshots/Error.png)
 
 ### Dashboard
-![Dashboard](screenshots/Dashboard.png)
+![Dashboard](Screenshots/Dashboard.png)
 
 ### Favourites
-![Favourites](screenshots/Favourites.png)
+![Favourites](Screenshots/Favourites.png)
 
 ## Notes
 - Favourites are kept for the current browser session and reset when the page is fully refreshed.
